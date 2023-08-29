@@ -1,0 +1,111 @@
+.container {
+  padding-bottom: 50px; /* Adjust this value to control the amount of space at the bottom of the page */
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.message.user {
+  flex-direction: row-reverse;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.message.user .avatar {
+  background-image: url('./jrcp.png');
+  background-size: cover;
+  margin-left: 10px;
+}
+
+.message.assistant .avatar {
+  background-image: url('./assistant.png');
+  background-size: cover;
+  margin-left: 10px;
+}
+
+.bubble {
+  padding: 10px;
+  border-radius: 15px;
+  max-width: 70%;
+  line-height: 1.4;
+}
+
+.message.user .bubble {
+  background-color: #22382d;
+  color: #ffffff;
+}
+
+.message.assistant .bubble {
+  background-color: #04553b;
+  color: #ffffff;
+}
+
+.menu-link {
+  margin-right: 10px;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.message-link {
+  margin-top: 5px;
+  font-size: 0.8em;
+  color: #777;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.message-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+input[type="text"] {
+  flex-grow: 6; /* Adjust this value to control the width of the input field */
+  max-width: 100%; /* Adjust this value to set the maximum width of the input field */
+  padding: 10px;
+  border-radius: 25px;
+  border: 1px solid #bdc3c7;
+  outline: none;
+}
+
+
+input[type="submit"] {
+  background-color: #2ecc71;
+  border: none;
+  border-radius: 25px;
+  color: #ffffff;
+  font-weight: bold;
+  margin-left: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  outline: none;
+}
+
+input[type="submit"]:hover {
+  background-color: #27ae60;
+}
+
+.navbar-brand img {
+  max-height: 50px; /* Adjust this value to control the size of the logo */
+  margin-right: 20px;
+}
+
+.message-links {
+  font-size: 80%; /* to make the font size 20% smaller */
+}
+
+.message-links a {
+  display: block; /* to display links one below the other */
+}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Add Documents</h1>
+  <form method="POST" action="{{ url_for('documents.add_documents') }}" enctype="multipart/form-data" id="uploadForm">
+    <div class="form-group">
+      <label for="topic">Topic</label>
+      <select class="form-control" id="topic" name="topic">
+        {% for topic in topics %}
+          <option>{{ topic }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="files">Select Files (.pdf,.doc,.docx,.ppt,.pptx,.txt)</label>
+      <input type="file" class="form-control-file" id="files" name="files" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.txt">
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+    <p id="loadingMessage" style="display: none;">Uploading...</p>
+  </form>
+
+
+<script>
+    document.getElementById("uploadForm").addEventListener("submit", function() {
+        document.getElementById("loadingMessage").style.display = "block";
+    });
+  </script>
+{% endblock %}

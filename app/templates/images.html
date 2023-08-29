@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Images</h1>
+  <a href="{{ url_for('images.add_images') }}" class="btn btn-primary mb-3">Add Images</a>
+  {% if images %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th>Image Name</th>
+          <th>Upload Datetime</th>
+          <th>Link</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for image in images %}
+          <tr>
+            <td>{{ image.topic }}</td>
+            <td>{{ image.image_name }}</td>
+            <td>{{ image.upload_datetime }}</td>
+            <td><a href="{{ url_for('documents.serve_uploaded_file', topic=image.topic, filename=image.image_name) }}" target="_blank">View image</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>You have no images, please upload.</p>
+  {% endif %}
+{% endblock %}

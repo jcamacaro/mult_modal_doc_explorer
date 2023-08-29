@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Conversations</h1>
+    {% if conversations|length > 0 %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Topic</th>
+                    <th scope="col">Last Updated</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for conversation in conversations %}
+                    <tr>
+                        <td>{{ conversation['name'] }}</td>
+                        <td>{{ conversation['topic'] }}</td>
+                        <td>{{ conversation['last_updated'].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td>
+                            <a href="{{ url_for('conversations.enter_conversation', conversation_id=conversation['_id']) }}" class="btn btn-primary">Enter</a>
+                            <a href="{{ url_for('conversations.delete_conversation', conversation_id=conversation['_id']) }}" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No conversations available</p>
+    {% endif %}
+    <a href="{{ url_for('conversations.new_conversation') }}" class="btn btn-primary">New Conversation</a>
+{% endblock %}

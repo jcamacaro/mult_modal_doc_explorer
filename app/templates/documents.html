@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Documents</h1>
+  <a href="{{ url_for('documents.add_documents') }}" class="btn btn-primary mb-3">Add Documents</a>
+  {% if documents %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th>Document Name</th>
+          <th>Upload Datetime</th>
+          <th>Link</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for document in documents %}
+          <tr>
+            <td>{{ document.topic }}</td>
+            <td>{{ document.document_name }}</td>
+            <td>{{ document.upload_datetime }}</td>
+            <td><a href="{{ url_for('documents.serve_uploaded_file', topic=document.topic, filename=document.document_name) }}" target="_blank">View Document</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>You have no documents, please upload.</p>
+  {% endif %}
+{% endblock %}

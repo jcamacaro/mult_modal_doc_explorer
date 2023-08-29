@@ -1,0 +1,90 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    ports:
+      - "5002:5000"
+    volumes:
+      - .:/app
+      - uploads:/app/uploads
+      - img_uploads:/app/img_uploads
+      - /media/jaimec/extTux/mm_data:/app/base_data
+    depends_on:
+      - mongo
+      - db
+    networks:
+      - chat-network
+    env_file:
+      - .env
+
+  mongo:
+    image: "mongo"
+    container_name: "mongo"
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - chat-network
+
+  db:
+    build:
+      context: ./app/db
+    container_name: chat_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 5s
+      retries: 5
+    networks:
+      - chat-network
+
+  pgadmin:
+    container_name: chat_pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    restart: unless-stopped
+    depends_on:
+      - db
+    networks:
+      - chat-network
+
+  dozzle:
+    container_name: chat_dozzle
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9999:8080
+    depends_on:
+      - db
+    networks:
+      - chat-network
+
+volumes:
+  mongo_data:
+  db_data:
+  pgadmin_data:
+  uploads:
+  img_uploads:
+  base_data:
+
+networks:
+  chat-network:
+    driver: bridge

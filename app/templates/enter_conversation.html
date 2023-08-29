@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ conversation.name }} </h1><h3>(Topic: {{ topic}}) </h3>
+
+<div class="messages">
+{% for message in conversation.messages %}
+  <div class="message {{ message.role }}">
+    <div class="message-content">
+      <div class="avatar"></div>
+      <div class="bubble">
+        {{ message.content }}
+      </div>
+    </div>
+    {% if message.sources is defined %}
+      <div class="message-links">
+        {% for source in message.sources %}
+          {% set filename = source.split('/')[-1].split('.')[0] %}
+          <a href="/documents{{ source }}">{{ filename }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+{% endfor %}
+
+</div>
+<div id="loader" style="display: none;">Loading...</div>
+<div class="form-container">
+  <form action="{{ url_for('conversations.enter_conversation', conversation_id=conversation._id) }}" method="post">
+    <input type="text" name="message" placeholder="Type your message...">
+    <input type="hidden" name="topic" value="{{ topic }}">
+    <input type="submit" value="Send">
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.form-container form');
+    const loader = document.getElementById('loader');
+    const messages = document.querySelector('.messages');
+    const url = '{{ url_for("conversations.enter_conversation", conversation_id=conversation._id) }}';
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      loader.style.display = 'block';
+
+      // Fetch the response from the server
+      fetch(url, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Add user message
+        const userMessage = document.createElement('div');
+        userMessage.classList.add('message', 'user');
+        userMessage.innerHTML = `
+          <div class="avatar"></div>
+          <div class="bubble">${data.user_message}</div>
+        `;
+        messages.appendChild(userMessage);
+
+        // Add assistant message
+        const assistantMessage = document.createElement('div');
+        assistantMessage.classList.add('message', 'assistant');
+        assistantMessage.innerHTML = `
+        <div class="message-content">
+          <div class="avatar"></div>
+          <div class="bubble">${data.assistant_response}</div>
+         </div>
+          `;
+         // Create a div for the message links
+        const messageLinks = document.createElement('div');
+        messageLinks.classList.add('message-links');
+        // Add a link for each source
+        for (let source of data.sources_list) {
+          const link = document.createElement('a');
+          let filename = source.split('/').pop(); // extract filename from path
+          filename = filename.slice(0, filename.lastIndexOf('.')); // remove extension
+          link.textContent = filename;
+          link.href = '/documents' + source;
+          messageLinks.appendChild(link);
+        }
+
+        assistantMessage.appendChild(messageLinks);
+        messages.appendChild(assistantMessage);
+
+        // Clear input and hide the loader
+        form.reset();
+        loader.style.display = 'none';
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        loader.style.display = 'none';
+      });
+    });
+  });
+</script>
+{% endblock %}
