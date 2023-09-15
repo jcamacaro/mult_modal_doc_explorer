@@ -14,7 +14,6 @@ class ImageEncoder:
         self.model = None
 
     def load_images(self):
-        # '/home/jaimec/Documents/Torch/learn_pytorch/images/TDA'
         transform = torchvision.transforms.Compose([
             torchvision.transforms.Resize((224, 224)),
             torchvision.transforms.ToTensor(),

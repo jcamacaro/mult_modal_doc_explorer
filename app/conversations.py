@@ -67,7 +67,7 @@ def enter_conversation(conversation_id):
         if user_message is not None:
             if topic != 'General (no documents)':
                 # persist_directory = os.path.join(app.instance_path, f"db_{topic}")
-                embeddings = OpenAIEmbeddings()
+                embeddings = app.embeddings #OpenAIEmbeddings()
                 vectordb = PGVector(
                     connection_string=connection_string,
                     embedding_function=embeddings,

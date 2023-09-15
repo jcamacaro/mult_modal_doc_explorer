@@ -25,3 +25,4 @@ einops
 python-dotenv
 pytesseract
 numpy
+pandas

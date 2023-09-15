@@ -9,6 +9,7 @@ from .preprocess import preprocess_documents, load_docs
 from dotenv import find_dotenv, load_dotenv
 from pathlib import Path
 import magic
+from .myutils import files_store_in_folder
 
 
 loaded_env = load_dotenv(find_dotenv())
@@ -38,13 +39,6 @@ def fetch_files(directory_path):
         file_storage_objects.append(file_storage)
     return file_storage_objects
 
-def files_store_in_folder(files, uploads_dir):
-    for file in files:
-        if file and file.filename.lower().endswith(FTYPES):
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(uploads_dir, filename)
-            file.save(file_path)
-
 def move_files_and_register_uploads(files, topic, topic_dir, uploads_dir):
     for file in files:
         filename = secure_filename(file.filename)
@@ -68,19 +62,19 @@ def gen_txt_files_for_docs(_file, uploads_dir):
         filename = secure_filename(file.filename)
         file_path = os.path.join(uploads_dir, filename)
         docs = load_docs(uploads_dir, filename)
-        app.logger.info("------------------------->>>>>>>>")
-        app.logger.info("inside gen_txt_files_for_docs")
-        app.logger.info(f" file -----> {filename}")
-        app.logger.info(f" docs -----> {docs}")
-        app.logger.info("------------------------->>>>>>>>")
+        # app.logger.info("------------------------->>>>>>>>")
+        # app.logger.info("inside gen_txt_files_for_docs")
+        # app.logger.info(f" file -----> {filename}")
+        # app.logger.info(f" docs -----> {docs}")
+        # app.logger.info("------------------------->>>>>>>>")
         for doc in docs:
             page = doc.page_content
             meta = doc.metadata
             cid = meta['contentId']
-            app.logger.info("------------------------->>>>>>>>")
-            app.logger.info("inside file store for pickle")
-            app.logger.info(f"registering file -----> {meta['contentId']}")
-            app.logger.info("------------------------->>>>>>>>")
+            # app.logger.info("------------------------->>>>>>>>")
+            # app.logger.info("inside file store for pickle")
+            # app.logger.info(f"registering file -----> {meta['contentId']}")
+            # app.logger.info("------------------------->>>>>>>>")
             with open(os.path.join(uploads_dir, f"{cid}.txt"), 'w') as f:
                 f.write(page)
                 files.append(f"{cid}.txt")
@@ -119,6 +113,10 @@ def move_files_and_register_docs(files, topic, topic_dir, uploads_dir):
 @documents_bp.route('/')
 def documents():
     documents = list(app.mongo.db.documents.find().sort([('upload_datetime', -1)]))
+    app.logger.info("------------------------->>>>>>>>")
+    app.logger.info("inside documents")
+    app.logger.info(f" sending -----> {documents}")
+    app.logger.info("------------------------->>>>>>>>")
     return render_template('documents.html', documents=documents)
 
 @documents_bp.route('/doc_proc', methods=['GET', 'POST'])
@@ -139,7 +137,7 @@ def start_populating_doc_db():
         app.logger.info(f"Files to upload {len(files)}")
         app.logger.info(f"Files to upload {files}")
         app.logger.info("------------------------->>>>>>>>")
-        files_store_in_folder(files, uploads_dir)
+        files_store_in_folder(files, uploads_dir, FTYPES)
 
         if preprocess_documents(uploads_dir, topic, _type='docs', _file=files):
             move_files_and_register_docs(files, topic, topic_dir, uploads_dir)
@@ -168,7 +166,7 @@ def add_documents():
         app.logger.info("add")
         app.logger.info(f"Files to upload {files}")
         app.logger.info("------------------------->>>>>>>>")
-        files_store_in_folder(files, uploads_dir)
+        files_store_in_folder(files, uploads_dir, FTYPES)
 
         if preprocess_documents(uploads_dir, topic):
             move_files_and_register_uploads(files, topic, topic_dir, uploads_dir)

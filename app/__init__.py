@@ -10,8 +10,8 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = secrets.token_hex(16)
     app.config["MONGO_URI"] = "mongodb://mongo:27017/documents_db"
-    os.environ["OPENAI_API_KEY"] = "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"
-    app.topics = ['ART', 'EXP']
+    os.environ["OPENAI_API_KEY"] = "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"
+    app.topics = ['ART', 'IMG', 'EXP']
     # Set up logging
     logging.basicConfig(level=logging.DEBUG)
     app.logger = logging.getLogger(__name__)

@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 
 from flask import current_app as app
 from .image_encoder import ImageEncoder
-from .test_img import register_embeddings
+# from .test_img import register_embeddings
 
 
 
@@ -58,28 +58,6 @@ def load_docs2(uploads_dir, _file):
     else:
         return None
 
-
-
-# def load_images(images_dir):
-#     # '/home/jaimec/Documents/Torch/learn_pytorch/images/TDA'
-#     transform = torchvision.transforms.Compose([
-#         torchvision.transforms.Resize((224, 224)),
-#         torchvision.transforms.ToTensor(),
-#         torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-#     ])
-#     dataset = torchvision.datasets.ImageFolder(root=images_dir,
-#                                                transform=transform)
-#     dataloader = torch.utils.data.DataLoader(dataset, batch_size=1000)
-#     return dataloader
-#
-# def encode_images(dataloadr):
-#     model = torchvision.models.resnet18(weights='DEFAULT')
-#     model.fc = torch.nn.Identity()
-#     model.eval()
-#     for data in dataloadr:
-#         embed = model(data[0]).detach().numpy()
-#     return embed
-
 def preprocess_documents(uploads_dir, topic, _type='pdfs', _file=None):
     postgres_user = os.getenv('DB_USER')
     postgres_password = os.getenv('DB_PASSWORD')
@@ -111,11 +89,12 @@ def preprocess_documents(uploads_dir, topic, _type='pdfs', _file=None):
         texts = text_splitter.split_documents(documents)
 
     # Loading the embeddings
-        embeddings = OpenAIEmbeddings() #app.embeddings
+        embeddings = app.embeddings #OpenAIEmbeddings()
         app.logger.info("------------------------->>>>>>>>")
         app.logger.info("processing files 3")
         app.logger.info("------------------------->>>>>>>>")
         try:
+
             vectordb = PGVector.from_documents(documents=texts,
                                                embedding=embeddings,
                                                collection_name=topic,
@@ -142,7 +121,7 @@ def preprocess_images(uploads_dir, topic, logger):
     img_embed = encoder.image_encoder_pair()
 
     try:
-        register_embeddings(connection_str=connection_string, embeddings=img_embed, logger=logger)
+        # register_embeddings(connection_str=connection_string, embeddings=img_embed, logger=logger)
         # vectordb = IPGVector.from_embeddings(img_embed,
         #                                    encoder,
         #                                    collection_name=topic,

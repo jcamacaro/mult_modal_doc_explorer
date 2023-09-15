@@ -8,18 +8,19 @@
       <thead>
         <tr>
           <th>Topic</th>
-          <th>Image Name</th>
+          <th>Image Path</th>
           <th>Upload Datetime</th>
           <th>Link</th>
         </tr>
       </thead>
       <tbody>
         {% for image in images %}
+            {jsond = image.uri}
           <tr>
             <td>{{ image.topic }}</td>
-            <td>{{ image.image_name }}</td>
+            <td>{{ jsond.image_path }}</td>
             <td>{{ image.upload_datetime }}</td>
-            <td><a href="{{ url_for('documents.serve_uploaded_file', topic=image.topic, filename=image.image_name) }}" target="_blank">View image</a></td>
+            <td><a href="{{ url_for('documents.serve_uploaded_file', topic=image.topic, filename=image.uri.image_path) }}" target="_blank">View image</a></td>
           </tr>
         {% endfor %}
       </tbody>

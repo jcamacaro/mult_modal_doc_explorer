@@ -13,6 +13,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+
 ENV FLASK_APP=app
 ENV FLASK_ENV=development
 
